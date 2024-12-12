@@ -23,6 +23,7 @@ public class HomeStep {
     public void adicionoMonitor() throws Exception{
         homeTask.clicarMonitorEscolhido();
         monitorAsusTask.adicionarAoCarrinho();
+        monitorAsusTask.fecharPopUp();
     }
 
     @Quando("realizar o pagamento")

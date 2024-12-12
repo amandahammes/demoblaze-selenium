@@ -1,6 +1,7 @@
 package cucumber.Tasks;
 
 import cucumber.Page.MonitorAsusPage;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,5 +29,10 @@ public class MonitorAsusTask {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", addCarrinho);
         wait.until(ExpectedConditions.elementToBeClickable(addCarrinho));
         addCarrinho.click();
+    }
+
+    public void fecharPopUp(){
+        Alert alert = driver.switchTo().alert();
+        alert.accept();
     }
 }
