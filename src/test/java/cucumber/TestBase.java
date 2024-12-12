@@ -1,6 +1,7 @@
 package cucumber;
 
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.io.FileInputStream;
@@ -27,6 +28,8 @@ public class TestBase {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--incognito");
+        driver = new ChromeDriver(options);
+        driver.get(DIR_PATH);
         return driver;
     }
 
