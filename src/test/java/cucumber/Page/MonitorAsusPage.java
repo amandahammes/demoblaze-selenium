@@ -16,4 +16,8 @@ public class MonitorAsusPage {
 
     @FindBy(xpath = "//a[text()='Add to cart']")
     public WebElement addCarrinho;
+
+    @FindBy(id = "cartur")
+    public WebElement clicarCarrinho;
+
 }

@@ -16,15 +16,16 @@ import java.time.Duration;
 public class MonitorAsusTask {
     private WebDriver driver;
     private MonitorAsusPage monitorAsusPage;
+    private WebDriverWait wait;
 
     public MonitorAsusTask(WebDriver driver) {
         this.driver = driver;
         this.monitorAsusPage = new MonitorAsusPage(driver);
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }
 
     public void adicionarAoCarrinho(){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         WebElement addCarrinho = wait.until(ExpectedConditions.visibilityOf(monitorAsusPage.addCarrinho));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", addCarrinho);
         wait.until(ExpectedConditions.elementToBeClickable(addCarrinho));
@@ -32,7 +33,16 @@ public class MonitorAsusTask {
     }
 
     public void fecharPopUp(){
+        wait.until(ExpectedConditions.alertIsPresent());
         Alert alert = driver.switchTo().alert();
         alert.accept();
+    }
+
+    public void irParaCarrinho(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        WebElement carrinhoElement = wait.until(ExpectedConditions.visibilityOf(monitorAsusPage.clicarCarrinho));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", carrinhoElement);
+        wait.until(ExpectedConditions.elementToBeClickable(carrinhoElement));
+        carrinhoElement.click();
     }
 }
