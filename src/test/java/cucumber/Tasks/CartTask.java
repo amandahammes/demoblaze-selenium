@@ -1,7 +1,6 @@
 package cucumber.Tasks;
 
 import cucumber.Page.CartPage;
-import cucumber.Page.HomePage;
 import org.junit.Assert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -17,7 +16,7 @@ public class CartTask {
 
     private WebDriver driver;
     private CartPage cartPage;
-    private WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    private WebDriverWait wait;
     private String nome = "Julia Fulana";
     private String pais = "Zambia";
     private String cidade = "Ulala";
@@ -29,53 +28,46 @@ public class CartTask {
     public CartTask(WebDriver driver) {
         this.driver = driver;
         this.cartPage = new CartPage(driver);
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     }
 
-    public void finalizarCompra(){
-        WebElement finalizarCompraElement = wait.until(ExpectedConditions.visibilityOf(cartPage.finalizarCompra));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", finalizarCompraElement);
-        wait.until(ExpectedConditions.elementToBeClickable(finalizarCompraElement));
-        finalizarCompraElement.click();
+    public void finalizarCompra() {
+        clicarElemento(cartPage.finalizarCompra);
     }
 
-    public void preencherDadosCompra(){
-        WebElement inputNameElement = wait.until(ExpectedConditions.visibilityOf(cartPage.inputNome));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", inputNameElement);
-        wait.until(ExpectedConditions.elementToBeClickable(inputNameElement));
-        WebElement inputPaisElement = wait.until(ExpectedConditions.visibilityOf(cartPage.inputPais));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", inputPaisElement);
-        wait.until(ExpectedConditions.elementToBeClickable(inputPaisElement));
-        WebElement inputCidadeElement = wait.until(ExpectedConditions.visibilityOf(cartPage.inputCidade));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", inputCidadeElement);
-        wait.until(ExpectedConditions.elementToBeClickable(inputCidadeElement));
-        WebElement inputCartaoElement = wait.until(ExpectedConditions.visibilityOf(cartPage.inputCredirCard));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", inputCartaoElement);
-        wait.until(ExpectedConditions.elementToBeClickable(inputCartaoElement));
-        WebElement inputMesElement = wait.until(ExpectedConditions.visibilityOf(cartPage.inputMes));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", inputMesElement);
-        wait.until(ExpectedConditions.elementToBeClickable(inputMesElement));
-        WebElement inputAnoElement = wait.until(ExpectedConditions.visibilityOf(cartPage.inputAno));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", inputAnoElement);
-        wait.until(ExpectedConditions.elementToBeClickable(inputAnoElement));
-        inputNameElement.sendKeys(nome);
-        inputPaisElement.sendKeys(pais);
-        inputCidadeElement.sendKeys(cidade);
-        inputCartaoElement.sendKeys(cartao);
-        inputMesElement.sendKeys(mes);
-        inputAnoElement.sendKeys(ano);
-        WebElement botaoPurchaseElement = wait.until(ExpectedConditions.visibilityOf(cartPage.clicarPurchase));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", botaoPurchaseElement);
-        wait.until(ExpectedConditions.elementToBeClickable(botaoPurchaseElement));
-        botaoPurchaseElement.click();
+    public void preencherDadosCompra() {
+        preencherCampo(cartPage.inputNome, nome);
+        preencherCampo(cartPage.inputPais, pais);
+        preencherCampo(cartPage.inputCidade, cidade);
+        preencherCampo(cartPage.inputCredirCard, cartao);
+        preencherCampo(cartPage.inputMes, mes);
+        preencherCampo(cartPage.inputAno, ano);
+        clicarElemento(cartPage.clicarPurchase);
     }
 
-    public void validarInfosCompra(){
-        WebElement infosConfirmacaoCompraElement = wait.until(ExpectedConditions.visibilityOf(cartPage.confirmacaoCompra));
-        wait.until(ExpectedConditions.elementToBeClickable(infosConfirmacaoCompraElement));
+    public void validarInfosCompra() {
+        WebElement infosConfirmacaoCompraElement = esperarVisibilidadeEProntoParaInteracao(cartPage.confirmacaoCompra);
         String textoSweetAlert = infosConfirmacaoCompraElement.getText();
         Assert.assertTrue("O texto do popup não contém o número do cartão.", textoSweetAlert.contains(cartao));
         Assert.assertTrue("O texto do popup não contém o nome do comprador.", textoSweetAlert.contains(nome));
-        Assert.assertTrue("O texto do popup não contém o nome do comprador.", textoSweetAlert.contains(textoConfirmacaoCompra));
+        Assert.assertTrue("O texto do popup não contém a mensagem de confirmação.", textoSweetAlert.contains(textoConfirmacaoCompra));
+    }
+
+    private void preencherCampo(WebElement elemento, String valor) {
+        WebElement elementoVisivel = esperarVisibilidadeEProntoParaInteracao(elemento);
+        elementoVisivel.sendKeys(valor);
+    }
+
+    private void clicarElemento(WebElement elemento) {
+        WebElement elementoVisivel = esperarVisibilidadeEProntoParaInteracao(elemento);
+        elementoVisivel.click();
+    }
+
+    private WebElement esperarVisibilidadeEProntoParaInteracao(WebElement elemento) {
+        WebElement elementoVisivel = wait.until(ExpectedConditions.visibilityOf(elemento));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", elementoVisivel);
+        wait.until(ExpectedConditions.elementToBeClickable(elementoVisivel));
+        return elementoVisivel;
     }
 }
